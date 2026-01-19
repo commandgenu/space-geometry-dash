@@ -25,7 +25,22 @@
                 <span class="title-sub">GEOMETRY DASH</span>
             </h1>
             <p class="subtitle">宇宙を駆け抜けろ!</p>
-            <button id="startBtn" class="btn">START</button>
+            <!-- 難易度選択ボタン -->
+            <div class="difficulty-container">
+                <button id="easyBtn" class="btn btn-easy">EASY</button>
+                <button id="normalBtn" class="btn btn-normal">NORMAL</button>
+                <button id="hardBtn" class="btn btn-hard">HARD</button>
+                <button id="extremeBtn" class="btn btn-extreme">EXTREME</button>
+            </div>
+
+            <div class="preview-toggle-container">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="previewModeToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="preview-label">PREVIEW MODE</span>
+            </div>
+
             <div class="instructions">
                 <p>クリック または スペースキー でジャンプ</p>
             </div>
@@ -41,6 +56,13 @@
                     <span class="best-label">BEST</span>
                     <span id="bestScore" class="best-value">0</span>
                 </div>
+                <button id="pauseBtn" class="btn-icon">II</button>
+            </div>
+
+            <div id="pauseMenu" class="pause-menu hidden">
+                <h2>PAUSE</h2>
+                <button id="resumeBtn" class="btn">RESUME</button>
+                <button id="exitBtn" class="btn btn-secondary">TITLE</button>
             </div>
             <canvas id="gameCanvas"></canvas>
         </div>
@@ -65,6 +87,7 @@
     <script src="js/player.js"></script>
     <script src="js/obstacle.js"></script>
     <script src="js/powerup.js"></script>
+    <script src="js/audio.js"></script>
     <script src="js/game.js"></script>
     <script src="js/main.js"></script>
 </body>

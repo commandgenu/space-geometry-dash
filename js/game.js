@@ -14,11 +14,12 @@ class Game {
         this.bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
         this.frameCount = 0;
         this.baseSpeed = 7.5; // ゲームの基本スピード
+        this.audioManager = new AudioManager();
 
         // ゲームオブジェクト
         this.terrain = new Terrain(this.width, this.height);
         this.player = new Player(150, this.height / 2);
-        this.obstacleManager = new ObstacleManager(this.width, this.height);
+        this.obstacleManager = new ObstacleManager(this.width, this.height, this.audioManager);
         this.obstacleManager.setTerrain(this.terrain);
         this.particleSystem = new ParticleSystem();
         this.powerUpManager = new PowerUpManager(this.width, this.height);
@@ -48,13 +49,19 @@ class Game {
         }
     }
 
-    start() {
+    start(difficulty = 'normal', isDemo = false) {
         this.state = 'playing';
+        this.paused = false; // ポーズ状態リセット
+        this.isDemo = isDemo; // デモモードフラグ
+        // ポーズメニューを確実に隠す
+        document.getElementById('pauseMenu').classList.add('hidden');
+
         this.score = 0;
         this.frameCount = 0;
         this.terrain.reset();
         this.player = new Player(150, this.height / 2);
         this.obstacleManager.reset();
+        this.obstacleManager.setDifficulty(difficulty); // 難易度設定
         this.obstacleManager.setTerrain(this.terrain);
         this.particleSystem.clear();
         this.powerUpManager.reset();
@@ -65,14 +72,33 @@ class Game {
     gameLoop() {
         if (this.state !== 'playing') return;
 
-        this.update();
-        this.draw();
+        if (!this.paused) {
+            this.update();
+            this.draw();
+        }
 
         this.animationId = requestAnimationFrame(() => this.gameLoop());
     }
 
+    togglePause() {
+        if (this.state !== 'playing') return;
+        this.paused = !this.paused;
+
+        const pauseMenu = document.getElementById('pauseMenu');
+        if (this.paused) {
+            pauseMenu.classList.remove('hidden');
+        } else {
+            pauseMenu.classList.add('hidden');
+        }
+    }
+
     update() {
         this.frameCount++;
+
+        // デモモード（オートパイロット）
+        if (this.isDemo) {
+            this.autoPilot();
+        }
 
         // 地形更新
         this.terrain.update();
@@ -115,18 +141,70 @@ class Game {
             this.particleSystem.addExplosion(collectedPowerUp.x, collectedPowerUp.y, 15, collectedPowerUp.color1);
         }
 
-        // 衝突判定（無敵状態でない場合のみ）
-        if (!this.powerUpManager.isInvincible()) {
+        // 衝突判定（無敵状態でない場合、かつデモモードでない場合）
+        if (!this.powerUpManager.isInvincible() && !this.isDemo) {
             this.checkCollisions();
         }
 
-        // スコア更新
-        if (this.frameCount % 10 === 0) {
+        // スコア更新（デモモードではスコア加算なし）
+        if (this.frameCount % 10 === 0 && !this.isDemo) {
             this.score++;
+        }
+
+        // スコア230でゲームクリア（タイトルへ戻る）
+        if (this.score >= 230) {
+            this.returnToTitle();
+            return;
         }
 
         // 背景の星を更新
         this.updateBackgroundStars();
+    }
+
+    // デモモード用の簡易オートパイロット
+    autoPilot() {
+        // 前方の障害物を検知
+        const lookAheadDist = 200;
+        const obstacles = this.obstacleManager.getObstacles();
+
+        // 直近の危険な障害物を探す
+        const danger = obstacles.find(obs => {
+            const dist = obs.x - this.player.x;
+            return dist > 0 && dist < lookAheadDist;
+        });
+
+        // 障害物が見つかったらジャンプ
+        // 実際にはより高度な判定が必要だが、デモ（下見）なので
+        // 「障害物が見えたらとりあえず飛ぶ」くらいの単純動作でOK
+        // 死なない（無敵）なので、失敗しても進み続ける
+        if (danger) {
+            if (!this.player.isJumping) {
+                this.player.jump();
+            } else if (this.player.velocity > 0 && this.player.jumpCount < 2) {
+                // 落下中でまだ2段ジャンプできるなら飛ぶ
+                this.player.jump();
+            }
+        }
+
+        // 穴（地形の切れ目や低い場所）も本来は避けるべきだが、今回は省略
+    }
+
+    returnToTitle() {
+        if (this.audioManager) this.audioManager.stopMusic();
+        this.state = 'waiting';
+
+        // ベストスコア更新チェック
+        if (this.score > this.bestScore) {
+            this.bestScore = this.score;
+            localStorage.setItem('bestScore', this.bestScore);
+        }
+
+        // フェードアウトなどの演出があれば良いが、即座に戻る
+        document.getElementById('gameScreen').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+
+        // ベストスコア表示更新
+        document.getElementById('bestScore').textContent = this.bestScore;
     }
 
     updateBackgroundStars() {
@@ -361,6 +439,7 @@ class Game {
 
     gameOver() {
         this.state = 'gameover';
+        if (this.audioManager) this.audioManager.stopMusic();
 
         // 爆発エフェクト
         this.particleSystem.addExplosion(this.player.x, this.player.y, 30);
@@ -382,7 +461,9 @@ class Game {
 
     draw() {
         // 背景をクリア
-        this.ctx.fillStyle = 'rgba(10, 14, 39, 0.3)';
+        // 背景色を動的に変更
+        const theme = this.obstacleManager.currentThemeColor || 'rgba(10, 14, 39, 0.3)';
+        this.ctx.fillStyle = theme;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
         // 背景の星を描画
