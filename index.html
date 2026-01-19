@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スペース ジオメトリーダッシュ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <div class="container">
+        <div id="startScreen" class="screen">
+            <h1 class="title">
+                <span class="title-main">SPACE</span>
+                <span class="title-sub">GEOMETRY DASH</span>
+            </h1>
+            <p class="subtitle">宇宙を駆け抜けろ!</p>
+            <button id="startBtn" class="btn">START</button>
+            <div class="instructions">
+                <p>クリック または スペースキー でジャンプ</p>
+            </div>
+        </div>
+
+        <div id="gameScreen" class="screen hidden">
+            <div class="hud">
+                <div class="score-container">
+                    <span class="score-label">SCORE</span>
+                    <span id="score" class="score-value">0</span>
+                </div>
+                <div class="best-score-container">
+                    <span class="best-label">BEST</span>
+                    <span id="bestScore" class="best-value">0</span>
+                </div>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div id="gameOverScreen" class="screen hidden">
+            <h2 class="game-over-title">GAME OVER</h2>
+            <div class="final-score-container">
+                <p class="final-score-label">YOUR SCORE</p>
+                <p id="finalScore" class="final-score-value">0</p>
+            </div>
+            <div class="best-score-display">
+                <p class="best-score-label">BEST SCORE</p>
+                <p id="bestScoreDisplay" class="best-score-value">0</p>
+            </div>
+            <button id="retryBtn" class="btn">RETRY</button>
+            <button id="menuBtn" class="btn btn-secondary">MENU</button>
+        </div>
+    </div>
+
+    <script src="js/particle.js"></script>
+    <script src="js/terrain.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/obstacle.js"></script>
+    <script src="js/powerup.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

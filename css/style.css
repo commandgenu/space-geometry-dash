@@ -1,0 +1,324 @@
+/* ===== リセット & ベーススタイル ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(135deg, #0a0e27 0%, #16213e 50%, #1a1a2e 100%);
+    color: #ffffff;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== 星空背景アニメーション ===== */
+.stars,
+.stars2,
+.stars3 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.stars {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><circle cx="1" cy="1" r="1" fill="white" opacity="0.8"/></svg>') repeat;
+    animation: starsMove 100s linear infinite;
+}
+
+.stars2 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="3" height="3"><circle cx="1.5" cy="1.5" r="1" fill="white" opacity="0.6"/></svg>') repeat;
+    animation: starsMove 150s linear infinite;
+}
+
+.stars3 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><circle cx="2" cy="2" r="1.5" fill="white" opacity="0.4"/></svg>') repeat;
+    animation: starsMove 200s linear infinite;
+}
+
+@keyframes starsMove {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* ===== コンテナ ===== */
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 600px;
+    z-index: 10;
+}
+
+/* ===== 画面共通スタイル ===== */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ===== スタート画面 ===== */
+.title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title-main {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4a9eff 0%, #6eb5ff 50%, #8b7fc7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(74, 158, 255, 0.2);
+    letter-spacing: 0.1em;
+}
+
+.title-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #6eb5ff;
+    letter-spacing: 0.3em;
+    text-shadow: 0 0 8px rgba(110, 181, 255, 0.3);
+}
+
+@keyframes titlePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #8ba3c7;
+    margin-bottom: 40px;
+    text-shadow: 0 0 5px rgba(139, 163, 199, 0.3);
+}
+
+.instructions {
+    margin-top: 30px;
+    padding: 15px 30px;
+    background: rgba(74, 158, 255, 0.08);
+    border: 2px solid rgba(74, 158, 255, 0.25);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.instructions p {
+    font-size: 0.9rem;
+    color: #6eb5ff;
+    letter-spacing: 0.05em;
+}
+
+/* ===== ボタン ===== */
+.btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 15px 60px;
+    margin: 10px;
+    background: linear-gradient(135deg, #4a9eff 0%, #8b7fc7 100%);
+    border: none;
+    border-radius: 50px;
+    color: #ffffff;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.3), 0 0 20px rgba(139, 127, 199, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(74, 158, 255, 0.4), 0 0 30px rgba(139, 127, 199, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #6eb5ff;
+    box-shadow: 0 0 8px rgba(110, 181, 255, 0.25);
+}
+
+/* ===== ゲーム画面 ===== */
+#gameScreen {
+    background: transparent;
+}
+
+.hud {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 100;
+}
+
+.score-container,
+.best-score-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 212, 255, 0.1);
+    padding: 10px 25px;
+    border-radius: 15px;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.score-label,
+.best-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    color: #00d4ff;
+    letter-spacing: 0.2em;
+    margin-bottom: 5px;
+}
+
+.score-value,
+.best-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ===== ゲームオーバー画面 ===== */
+.game-over-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: #ff006e;
+    text-shadow: 0 0 30px rgba(255, 0, 110, 0.8);
+    margin-bottom: 30px;
+    animation: gameOverPulse 1s ease-in-out infinite;
+}
+
+@keyframes gameOverPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.final-score-container,
+.best-score-display {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.final-score-label,
+.best-score-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    color: #00d4ff;
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+}
+
+.final-score-value,
+.best-score-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        height: 100vh;
+    }
+
+    .title-main {
+        font-size: 3rem;
+    }
+
+    .title-sub {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        font-size: 1.2rem;
+        padding: 12px 40px;
+    }
+
+    .game-over-title {
+        font-size: 2.5rem;
+    }
+}
